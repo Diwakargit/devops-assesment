@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: {{ include "go-api-app.fullname" . }}
+ labels:
+ {{- include "go-api-app.labels" . | nindent 4 }}
+spec:
+ replicas: {{ .Values.replicaCount }}
+ selector:
+ matchLabels:
+ {{- include "go-api-app.selectorLabels" . | nindent 6 }}
+ template:
+ metadata:
+ labels:
+ {{- include "go-api-app.selectorLabels" . | nindent 8 }}
+ spec:
+ containers:
+ - name: {{ .Chart.Name }}
+ image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+ imagePullPolicy: {{ .Values.image.pullPolicy }}
+ ports:
+ - containerPort: {{ .Values.service.port }}
+ nodeSelector:
+ {{- toYaml .Values.nodeSelector | nindent 8 }}
+ affinity:
+ {{- toYaml .Values.affinity | nindent 8 }}
+ tolerations:
+ {{- toYaml .Values.tolerations | nindent 8 }}

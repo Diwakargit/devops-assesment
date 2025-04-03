@@ -1,0 +1,26 @@
+replicaCount: 5
+
+image:
+ repository: go-api-app
+ pullPolicy: IfNotPresent
+ tag: latest
+
+service:
+ type: ClusterIP
+ port: 8080
+
+nodeSelector:
+ role: api
+
+tolerations: []
+
+affinity:
+ podAntiAffinity:
+ requiredDuringSchedulingIgnoredDuringExecution:
+ - labelSelector:
+ matchExpressions:
+ - key: app
+ operator: In
+ values:
+ - go-api-app
+ topologyKey: "kubernetes.io/hostname"
